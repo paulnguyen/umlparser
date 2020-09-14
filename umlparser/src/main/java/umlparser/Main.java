@@ -2,9 +2,17 @@
 
 package umlparser ;
 
-import java.io.Console;
-import java.io.File;
+import java.io.*;
 
+/*
+    Apache HTTP Client 3.0 (Legacy)
+
+    http://hc.apache.org/httpclient-legacy/index.html
+    https://hc.apache.org/httpclient-3.x/apidocs/
+*/
+
+import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.methods.*;
 
 /**
  * Main Entry Point.
@@ -29,7 +37,7 @@ final class Main {
     private static void touch ( String dir, String filename ) {
         File file = new File( dir, filename ) ;
         if ( !file.exists() ) {
-            try { 
+            try {
                 file.createNewFile()  ;
             } catch ( Exception e ) {
                 System.out.println( e ) ;
@@ -38,14 +46,32 @@ final class Main {
     }
 
     /**
+     * [copyInputStreamToFile description]
+     * @param  inputStream [description]
+     * @param  filename    [description]
+     * @throws IOException [description]
+     */
+    private static void copyInputStreamToFile(InputStream inputStream, String filename)
+    throws IOException {
+
+        File file = new File( filename );
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            int read;
+            byte[] bytes = new byte[1024];
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        }
+
+    }
+
+
+    /**
      * Main App Entry Point.
-     * @param args No args expected.
+     * @param args base-dir test-case
      */
     public static void main(final String[] args) {
-        String basedir = "" ;
-        String testdir = "" ;
-        String testcase = "" ;
-        String outdir = "" ;
+
         if ( DEBUG ) {
             System.out.printf( "[DEBUG] UML Parser #Args: %d%n", args.length ) ;
             for (int i = 0; i < args.length; i++)  {
@@ -53,22 +79,41 @@ final class Main {
             }
         }
         if ( args.length == 2 ) {
-            basedir = args[0] ;
-            testcase = args[1] ;
-            testdir = basedir + File.separator + testcase ;
-            outdir = basedir + File.separator + "output" + File.separator + testcase ;
-            System.out.printf("basedir: %s%n", basedir) ;
-            System.out.printf("testdir: %s%n", testdir) ;
-            System.out.printf("outdir: %s%n", outdir) ;
-            if ( testcase.equals("sequence") ) {
-                touch(outdir, testcase+".seq") ;    // sequence source
-                touch(outdir, testcase+".jpg") ;    // sequence output
-            } else {
-                touch(outdir, testcase+".java") ;   // umlgraph source
-                touch(outdir, testcase+".png") ;    // umlgraph output
+
+            String basedir = args[0] ;
+            String testcase = args[1] ;
+            String testdir = basedir + File.separator + testcase ;
+            String outdir = basedir + File.separator + "output" + File.separator + testcase ;
+            if ( DEBUG ) {
+                System.out.printf("basedir: %s%n", basedir) ;
+                System.out.printf("testdir: %s%n", testdir) ;
+                System.out.printf("outdir: %s%n", outdir) ;                
             }
+
+            /* 
+            ** Replace This Code with your work! 
+            */
+            if ( testcase.equals("sequence") ) {
+                touch(outdir, testcase + ".seq") ;  // sequence source
+                touch(outdir, testcase + ".jpg") ;  // sequence output
+            } else {
+
+                /* Sample usage of YUML Object */
+                if ( testcase.equals("test1") ) {
+                    String dsl_test1 = "[A|-x:int;-y:int(*)]1-0..*[B],\n" +
+                           "[A]-1[C],\n" +
+                           "[A]-*[D]\n" ;                    
+                    YUML uml = new YUML( basedir ) ;
+                    String image = uml.generate( dsl_test1, "test1" ) ;
+                    System.out.println("Generated: " + image) ;
+                } else {
+                    touch(outdir, testcase + ".yuml") ; // yuml source
+                    touch(outdir, testcase + ".jpg") ;  // yuml output
+                }
+            }
+
         } else {
-             System.out.println( "java -cp [jar file].jar umlparser.Main [base directory] [test case]" ) ;
+            System.out.println( "java -cp [jar file].jar umlparser.Main [base directory] [test case]" ) ;
         }
 
 
