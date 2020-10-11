@@ -33,7 +33,7 @@ class YUML {
 		String outdir = "" ;
 
 		/* Setup Test and Output Directories */
-		testdir = basedir + File.separator + testcase ;
+		testdir = basedir + File.separator + "testcases" + File.separator + testcase ;
 		outdir = basedir + File.separator + "output" + File.separator + testcase ;
 
 		if (DEBUG) {
