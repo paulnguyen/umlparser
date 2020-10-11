@@ -82,9 +82,11 @@ final class Main {
 
             String basedir = args[0] ;
             String testcase = args[1] ;
+            String testdir = basedir + File.separator + "testcases" + File.separator + testcase ;
             String outdir = basedir + File.separator + "output" + File.separator + testcase ;
             if ( DEBUG ) {
                 System.out.printf("basedir: %s%n", basedir) ;
+                System.out.printf("testdir: %s%n", testdir) ;
                 System.out.printf("outdir: %s%n", outdir) ;                
             }
 

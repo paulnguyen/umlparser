@@ -29,16 +29,13 @@ class YUML {
 
 	public String generate( String dsl, String testcase ) {
 
-		String testdir = "" ;
 		String outdir = "" ;
 
 		/* Setup Test and Output Directories */
-		testdir = basedir + File.separator + "testcases" + File.separator + testcase ;
 		outdir = basedir + File.separator + "output" + File.separator + testcase ;
 
 		if (DEBUG) {
 			System.out.printf("basedir: %s%n", basedir) ;
-			System.out.printf("testdir: %s%n", testdir) ;
 			System.out.printf("outdir: %s%n", outdir) ;
 		}
 
